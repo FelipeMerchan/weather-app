@@ -1,6 +1,7 @@
-import weather from "../data/current-weather.js"
 import { formatDate, formatTemp } from "./utils/format-data.js"
 import { weatherConditionsCodes } from "./constants.js"
+import { getLatLon } from "./geolocation.js"
+import { getCurrentWeather } from "./services/weather.js"
 
 function setCurrentCity($el, city) {
   $el.textContent = city
@@ -34,7 +35,18 @@ function setBackground($el, conditionCode, solarStatus) {
   $el.style.backgroundImage = `url('./images/${solarStatus}-${weatherType}${size}.jpg')`
 }
 
+function showCurrentWeather($app, $loading) {
+  $app.hidden = false
+  $loading.hidden = true
+}
+
 function configCurrentWeather(weather) {
+  const $app = document.querySelector("#app")
+  const $loading = document.querySelector("#loading")
+
+  //loader
+  showCurrentWeather($app, $loading)
+
   //date
   const $currentWeatherDate = document.querySelector("#current-weather-date")
   setCurrentDate($currentWeatherDate)
@@ -52,11 +64,14 @@ function configCurrentWeather(weather) {
   //background
   const sunriseTime = new Date(weather.sys.sunrise * 1000)
   const sunsetTime = new Date(weather.sys.sunset * 1000)
-  const $app = document.querySelector("#app")
   const conditionCode = String(weather.weather[0].id).charAt(0)
   setBackground($app, conditionCode, solarStatus(sunriseTime, sunsetTime))
 }
 
-export function currentWeather() {
+export async function currentWeather() {
+  const { lat, lon, isError } = await getLatLon()
+  if (isError) return console.log("Ha ocurrido un error ubicándote")
+  const { isError: currentWeatherError, data: weather } = await getCurrentWeather(lat, lon)
+  if (currentWeatherError) return console.log("Ha ocurrido un error obteniendo los datos del clima")
   configCurrentWeather(weather)
 }
