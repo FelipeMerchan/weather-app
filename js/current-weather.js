@@ -1,7 +1,7 @@
-import weather from "../data/current-weather.js"
 import { formatDate, formatTemp } from "./utils/format-data.js"
 import { weatherConditionsCodes } from "./constants.js"
 import { getLatLon } from "./geolocation.js"
+import { getCurrentWeather } from "./services/weather.js"
 
 function setCurrentCity($el, city) {
   $el.textContent = city
@@ -61,6 +61,7 @@ function configCurrentWeather(weather) {
 export async function currentWeather() {
   const { lat, lon, isError } = await getLatLon()
   if (isError) return console.log("Ha ocurrido un error ubicándote")
-  console.log(lat, lon)
+  const { isError: currentWeatherError, data: weather } = await getCurrentWeather(lat, lon)
+  if (currentWeatherError) return console.log("Ha ocurrido un error obteniendo los datos del clima")
   configCurrentWeather(weather)
 }
