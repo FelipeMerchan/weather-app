@@ -1,7 +1,7 @@
 import weather from "../data/current-weather.js"
 import { formatDate, formatTemp } from "./utils/format-data.js"
 import { weatherConditionsCodes } from "./constants.js"
-import { getCurrentPosition } from "./geolocation.js"
+import { getLatLon } from "./geolocation.js"
 
 function setCurrentCity($el, city) {
   $el.textContent = city
@@ -58,7 +58,9 @@ function configCurrentWeather(weather) {
   setBackground($app, conditionCode, solarStatus(sunriseTime, sunsetTime))
 }
 
-export function currentWeather() {
-  getCurrentPosition()
+export async function currentWeather() {
+  const { lat, lon, isError } = await getLatLon()
+  if (isError) return console.log("Ha ocurrido un error ubicándote")
+  console.log(lat, lon)
   configCurrentWeather(weather)
 }

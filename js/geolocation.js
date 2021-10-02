@@ -6,12 +6,29 @@ function geolocationSuppport() {
   return false
 }
 
-export function getCurrentPosition() {
+const defaultOptions = {
+  enableHighAccuracy: true,
+  timeout: 5000,
+  maximunAge: 100000,
+}
+
+export function getCurrentPosition(options) {
   if (!geolocationSuppport()) throw new Error("No hay soporte de geolocalización en tu navegador")
 
-  navigator.geolocation.getCurrentPosition((position) => {
-    const latitude = position.coords.latitude
-    const longitude = position.coords.longitude
-    console.log(latitude)
+  return new Promise((resolve, reject) => {
+    navigator.geolocation.getCurrentPosition((position) => {
+      resolve(position)
+    }, () => {
+      reject(new Error("No se pudo obtener la posición actual"))
+    }, options)
   })
+}
+
+export async function getLatLon(options = defaultOptions) {
+  try {
+    const { coords: { latitude: lat, longitude: lon } } = await getCurrentPosition(options)
+    return { lat, lon, isError: false }
+  } catch {
+    return { isError: true, lat: null, lon: null }
+  }
 }
