@@ -32,3 +32,16 @@
   inset-inline-end: 0;
 }
 
+.weatherMetrics {
+  padding-block-end: 1rem;
+}
+
+.weatherMetrics:not([hidden]) {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 1rem;
+}
+
+.weatherMetrics strong {
+  font: var(--body1-bold);
+}
