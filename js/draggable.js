@@ -40,6 +40,23 @@ export function draggable($element, options = defaultOptions) {
     return event.pageY || event.touches[0].pageY
   }
 
+  function setAnimations() {
+    $element.style.transition = "margin-bottom .3s"
+  }
+
+  function bounce() {
+    if (widgetPosition < ELEMENT_BLOCK_SIZE / 2) {
+      return open()
+    }
+    return close()
+  }
+
+  function dragEnd() {
+    logger("DRAG END")
+    isDragging = false
+    bounce()
+  }
+
   function startDrag(event) {
     isDragging = true
     startY = pageY(event)
@@ -52,14 +69,17 @@ export function draggable($element, options = defaultOptions) {
 
   function handlePointerUp() {
     logger("Pointer UP")
+    dragEnd()
   }
 
   function handlePointerOut() {
     logger("Pointer OUT")
+    dragEnd()
   }
 
   function handlePointerCancel() {
     logger("Pointer CANCEL")
+    dragEnd()
   }
 
   function handlePointerMove(event) {
@@ -73,6 +93,9 @@ export function draggable($element, options = defaultOptions) {
   $marker.addEventListener("pointerout", handlePointerOut)
   $marker.addEventListener("pointercancel", handlePointerCancel)
   $marker.addEventListener("pointermove", handlePointerMove)
+  if (options.aniamtable) {
+    setAnimations()
+  }
 
   function logger(message) {
     if (options.debug) {
