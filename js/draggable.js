@@ -23,7 +23,6 @@ export function draggable($element, options = defaultOptions) {
   let startY = 0
 
   function handleClick(event) {
-    logger("Click")
     toggle()
   }
 
@@ -52,7 +51,6 @@ export function draggable($element, options = defaultOptions) {
   }
 
   function dragEnd() {
-    logger("DRAG END")
     isDragging = false
     bounce()
   }
@@ -63,27 +61,22 @@ export function draggable($element, options = defaultOptions) {
   }
 
   function handlePointerDown(event) {
-    logger("Pointer DOWN")
     startDrag(event)
   }
 
   function handlePointerUp() {
-    logger("Pointer UP")
     dragEnd()
   }
 
   function handlePointerOut() {
-    logger("Pointer OUT")
     dragEnd()
   }
 
   function handlePointerCancel() {
-    logger("Pointer CANCEL")
     dragEnd()
   }
 
   function handlePointerMove(event) {
-    logger("Pointer MOVE")
     drag(event)
   }
 
@@ -104,14 +97,12 @@ export function draggable($element, options = defaultOptions) {
   }
 
   function open() {
-    logger("Abrir widget")
     isOpen = true
     widgetPosition = VISIBLE_Y_POSITION
     setWidgetPosition(widgetPosition)
   }
 
   function close() {
-    logger("Cerrar widget")
     isOpen = false
     widgetPosition = HIDDEN_Y_POSITION
     setWidgetPosition(widgetPosition)
@@ -125,8 +116,10 @@ export function draggable($element, options = defaultOptions) {
     const cursorY = pageY(event)
     const movementY = cursorY - startY
     widgetPosition = widgetPosition + movementY
-    logger(movementY)
     startY = cursorY
+    if (widgetPosition > HIDDEN_Y_POSITION) {
+      return false
+    }
     setWidgetPosition(widgetPosition)
   }
 }
