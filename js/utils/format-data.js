@@ -12,6 +12,11 @@ export function formatTemp(temp) {
   return `${Math.floor(temp)}°`
 }
 
+export function formatSpeedToKmph(speed) {
+  const kmph = (speed * 3600) / 1 * 1 / 1000
+  return `${kmph.toFixed(1)}km-h`
+}
+
 export function formatWeekList(rawData) {
   let dayList = []
   const weekList = []
